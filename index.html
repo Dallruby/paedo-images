@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>사주 겁나 잘보는 관상가 아저씨</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.js"></script>
+<style>
+:root{
+  --ink:#00173E; --ink2:#0A2A5E; --pop:#FFCE3A; --pop2:#FFE18A;
+  --paper:#FCFBF7; --line:#00173E; --mute:#5E6D86;
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;background:var(--paper);
+  color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden}
+.wrap{max-width:620px;margin:0 auto;padding:0 18px;width:100%}
+button{font-family:inherit}
+
+/* ========== INTRO ========== */
+#intro{position:fixed;inset:0;z-index:300;background:var(--paper);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;cursor:pointer;padding:24px;overflow:hidden}
+#intro.out{animation:iout .8s cubic-bezier(.7,0,.2,1) forwards}
+@keyframes iout{to{opacity:0;transform:scale(1.12)}}
+.blob{position:absolute;border-radius:50%;background:var(--pop);z-index:0}
+.b1{width:62vw;height:62vw;max-width:420px;max-height:420px;top:8%;left:-16%;animation:fl1 9s ease-in-out infinite}
+.b2{width:44vw;height:44vw;max-width:300px;max-height:300px;bottom:6%;right:-12%;background:var(--pop2);animation:fl1 11s ease-in-out infinite reverse}
+@keyframes fl1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(22px,-26px) scale(1.09)}}
+.ttl{position:relative;z-index:2;width:min(90vw,540px);
+  opacity:0;transform:scale(.7) rotate(-5deg);
+  animation:pop9 1s cubic-bezier(.2,1.5,.4,1) .2s forwards}
+@keyframes pop9{to{opacity:1;transform:none}}
+.ttl img{width:100%;display:block}
+.tap{position:relative;z-index:2;margin-top:34px;text-align:center;opacity:0;animation:fin .6s ease 1.1s forwards}
+@keyframes fin{to{opacity:1}}
+.tapbtn{display:inline-block;background:var(--ink);color:#fff;font-size:15px;font-weight:800;
+  padding:15px 34px;border-radius:40px;box-shadow:5px 5px 0 var(--pop);
+  animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+
+/* ========== APP ========== */
+#app{display:none;min-height:100dvh;flex-direction:column;padding-top:var(--sat)}
+#app.on{display:flex}
+.top{position:sticky;top:0;z-index:60;height:56px;display:flex;align-items:center;justify-content:center;
+  background:var(--paper);border-bottom:2px solid var(--ink)}
+.top .bk{position:absolute;left:12px;height:34px;padding:0 14px;border-radius:20px;border:2px solid var(--ink);
+  background:var(--paper);color:var(--ink);font-size:13px;font-weight:800;cursor:pointer;display:none;
+  align-items:center;transition:.15s}
+.top .bk:active{transform:translate(1px,1px)}
+.top.sub .bk{display:flex}
+.top h1{font-size:14px;font-weight:900;letter-spacing:-.02em}
+.snd{position:absolute;right:12px;width:34px;height:34px;border-radius:50%;border:2px solid var(--ink);
+  background:var(--pop);color:var(--ink);font-size:13px;font-weight:800;cursor:pointer;transition:.15s}
+.snd:active{transform:translate(1px,1px)}
+.snd.off{background:var(--paper);opacity:.45}
+
+.view{display:none;flex:1;padding:24px 0 calc(50px + var(--sab))}
+.view.on{display:block}
+
+/* ========== HOME ========== */
+.hmttl{width:min(84vw,400px);margin:6px auto 26px;display:block;
+  animation:pop9 .85s cubic-bezier(.2,1.5,.4,1) both}
+.menu{display:grid;gap:13px}
+.mi{position:relative;display:flex;align-items:center;gap:16px;width:100%;text-align:left;
+  background:#fff;border:2.5px solid var(--ink);border-radius:20px;padding:18px 18px;cursor:pointer;
+  box-shadow:5px 5px 0 var(--ink);opacity:0;transform:translateY(24px);
+  animation:mi .6s cubic-bezier(.2,1.3,.4,1) forwards;transition:box-shadow .15s,transform .15s}
+@keyframes mi{to{opacity:1;transform:none}}
+.mi:active{box-shadow:1px 1px 0 var(--ink);transform:translate(4px,4px)}
+@media(hover:hover){.mi:hover{box-shadow:7px 7px 0 var(--pop)}}
+.mi .hz{flex:none;width:56px;height:56px;border-radius:15px;background:var(--pop);border:2.5px solid var(--ink);
+  display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:800;
+  transition:transform .4s cubic-bezier(.2,1.4,.4,1)}
+.mi:hover .hz{transform:rotate(-8deg) scale(1.06)}
+.mi .tx{flex:1}
+.mi .ko{font-size:19px;font-weight:900;letter-spacing:-.04em}
+.mi .de{font-size:12.5px;color:var(--mute);margin-top:1px;font-weight:500}
+.mi .go{flex:none;font-size:19px;font-weight:900;color:var(--ink);transition:transform .3s}
+.mi:hover .go{transform:translateX(5px)}
+.gohome{display:block;width:100%;margin-top:22px;background:var(--ink);color:#fff;border:2.5px solid var(--ink);
+  border-radius:20px;padding:16px;font-size:15px;font-weight:800;cursor:pointer;text-align:center;
+  text-decoration:none;box-shadow:5px 5px 0 var(--pop);transition:.15s}
+.gohome:active{box-shadow:1px 1px 0 var(--pop);transform:translate(4px,4px)}
+
+/* ========== HEAD ========== */
+.vh{text-align:center;margin-bottom:22px}
+.vh h2{display:inline-block;position:relative;font-size:clamp(26px,7vw,34px);font-weight:900;letter-spacing:-.05em;z-index:1}
+.vh h2::after{content:"";position:absolute;left:-6px;right:-6px;bottom:2px;height:12px;background:var(--pop);
+  z-index:-1;transform:scaleX(0);transform-origin:left;animation:hl .55s cubic-bezier(.5,0,.2,1) .25s forwards}
+@keyframes hl{to{transform:scaleX(1)}}
+.vh p{font-size:12.5px;font-weight:700;letter-spacing:.24em;color:var(--mute);margin-top:8px}
+
+/* ========== STEPS (가로 3열 고정) ========== */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.st{background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding:13px 6px;text-align:center;
+  transition:.35s cubic-bezier(.2,1.3,.4,1)}
+.st.done{background:var(--pop);transform:translateY(-3px);box-shadow:3px 3px 0 var(--ink)}
+.st .n{display:block;font-size:11px;font-weight:900;color:var(--mute);letter-spacing:.06em}
+.st.done .n{color:var(--ink)}
+.st .t{display:block;font-size:12.5px;font-weight:800;margin-top:5px;letter-spacing:-.03em;line-height:1.35}
+
+/* ========== CARD ========== */
+.card{background:#fff;border:2.5px solid var(--ink);border-radius:22px;padding:20px;box-shadow:5px 5px 0 var(--ink)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.grid{grid-template-columns:1fr}}
+label{display:block;font-size:11px;font-weight:800;color:var(--mute);margin-bottom:5px;letter-spacing:.08em;text-align:center}
+input{width:100%;padding:13px;border:2.5px solid var(--ink);border-radius:14px;font-size:15px;text-align:center;
+  font-family:inherit;font-weight:600;background:var(--paper);color:var(--ink);transition:.15s}
+input:focus{outline:none;background:var(--pop2)}
+input:disabled{opacity:.3}
+.seg{display:flex;gap:7px}
+.seg button{flex:1;padding:13px 0;border:2.5px solid var(--ink);background:var(--paper);border-radius:14px;
+  font-size:14px;font-weight:800;color:var(--mute);cursor:pointer;transition:.15s}
+.seg button.on{background:var(--pop);color:var(--ink)}
+.chk{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;cursor:pointer}
+.chk input{width:17px;height:17px;accent-color:var(--ink)}
+.chk span{font-size:13px;font-weight:700;color:var(--mute)}
+.btn{width:100%;margin-top:15px;padding:16px;border:2.5px solid var(--ink);border-radius:16px;
+  background:var(--ink);color:#fff;font-size:15.5px;font-weight:900;cursor:pointer;letter-spacing:-.02em;
+  box-shadow:4px 4px 0 var(--pop);transition:.15s}
+.btn:active{box-shadow:0 0 0 var(--pop);transform:translate(4px,4px)}
+.btn.g{background:#fff;color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.btn.g:active{box-shadow:0 0 0 var(--ink)}
+.btn.ok{background:var(--pop)!important;color:var(--ink)!important}
+
+.p4s{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:16px}
+.p4 b{display:block;text-align:center;font-size:10px;color:var(--mute);font-weight:800;letter-spacing:.14em;margin-bottom:5px}
+.p4 .fc{background:var(--ink);color:var(--pop);border-radius:14px;padding:15px 2px;text-align:center;
+  font-size:clamp(16px,4.8vw,21px);font-weight:800}
+.p4.fl .fc{animation:fl9 .6s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes fl9{0%{transform:scale(.3) rotate(-14deg);opacity:0}100%{transform:none;opacity:1}}
+
+.out{display:none;margin-top:14px}
+.out.show{display:block;animation:up .45s cubic-bezier(.2,1.2,.4,1) both}
+@keyframes up{from{opacity:0;transform:translateY(14px)}}
+.mono{background:var(--ink);color:var(--pop2);border-radius:14px;padding:14px;font-size:11.5px;line-height:1.9;
+  word-break:break-all;font-family:ui-monospace,Menlo,monospace;max-height:160px;overflow:auto;text-align:left}
+.err{display:none;margin-top:12px;padding:12px;border:2.5px solid var(--ink);border-radius:14px;
+  background:#FFD9D9;font-size:13.5px;font-weight:700;text-align:center}
+.err.show{display:block;animation:sh .38s}
+@keyframes sh{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+
+/* ========== DIR ========== */
+.dirbox{text-align:center}
+.ph{width:118px;height:118px;margin:0 auto 18px;border-radius:50%;background:var(--pop);
+  border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;
+  font-size:38px;font-weight:900;animation:pop9 .7s cubic-bezier(.2,1.5,.4,1) both}
+.dirbox .q{font-size:17px;font-weight:900;letter-spacing:-.04em;line-height:1.5}
+.dirbox .s{font-size:13.5px;color:var(--mute);margin-top:10px;font-weight:600}
+.tags{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:18px}
+.tag{font-size:11.5px;font-weight:800;border:2px solid var(--ink);padding:6px 13px;border-radius:20px;background:var(--paper)}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <div class="blob b1"></div><div class="blob b2"></div>
+  <div class="ttl"><img src="title.png" alt="사주 겁나 잘보는 관상가 아저씨"></div>
+  <div class="tap"><span class="tapbtn">눌러서 들어가기</span></div>
+</div>
+
+<audio id="bgm" loop preload="auto"><source src="bgm.mp3" type="audio/mpeg"></audio>
+
+<div id="app">
+  <div class="top" id="tb">
+    <button class="bk" id="bk">‹ 뒤로</button>
+    <h1 id="tbt">관상가 아저씨</h1>
+    <button class="snd" id="snd">♪</button>
+  </div>
+
+  <div class="view on" id="v-home"><div class="wrap">
+    <img class="hmttl" src="title.png" alt="사주 겁나 잘보는 관상가 아저씨">
+    <div class="menu">
+      <button class="mi" data-go="saju" style="animation-delay:.08s">
+        <span class="hz">四柱</span><span class="tx"><span class="ko">사주 만들기</span><span class="de">생년월일시로 계산합니다</span></span><span class="go">→</span></button>
+      <button class="mi" data-go="face" style="animation-delay:.18s">
+        <span class="hz">觀相</span><span class="tx"><span class="ko">관상 만들기</span><span class="de">사진을 자료로 바꿉니다</span></span><span class="go">→</span></button>
+      <button class="mi" data-go="dir" style="animation-delay:.28s">
+        <span class="hz">所長</span><span class="tx"><span class="ko">아저씨는 누구</span><span class="de">정진연구소 소장</span></span><span class="go">→</span></button>
+    </div>
+    <a class="gohome" href="https://share.crack.wrtn.ai/n2px2q" target="_blank" rel="noopener">아저씨 만나러 가기</a>
+  </div></div>
+
+  <div class="view" id="v-saju"><div class="wrap">
+    <div class="vh"><h2>사주 만들기</h2><p>한 번만 하면 끝</p></div>
+    <div class="steps">
+      <div class="st" id="s1"><span class="n">01</span><span class="t">생일<br>넣기</span></div>
+      <div class="st" id="s2"><span class="n">02</span><span class="t">결과<br>복사</span></div>
+      <div class="st" id="s3"><span class="n">03</span><span class="t">유저노트에<br>저장</span></div>
+    </div>
+    <div class="card">
+      <div class="grid">
+        <div><label>성별</label><div class="seg" id="sex"><button data-v="여" class="on">여자</button><button data-v="남">남자</button></div></div>
+        <div><label>양력 / 음력</label><div class="seg" id="cal"><button data-v="양" class="on">양력</button><button data-v="음">음력</button></div></div>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div><label>생년월일</label><input type="date" id="date" min="1961-01-01"></div>
+        <div><label>태어난 시각</label><input type="time" id="time"></div>
+      </div>
+      <label class="chk"><input type="checkbox" id="noTime"><span>시각 모름</span></label>
+      <label class="chk" id="leapWrap" style="display:none"><input type="checkbox" id="leap"><span>윤달</span></label>
+      <button class="btn" id="calc">계산하기</button>
+      <div class="err" id="err"></div>
+      <div class="out" id="out">
+        <div class="p4s">
+          <div class="p4"><b>年</b><div class="fc">·</div></div><div class="p4"><b>月</b><div class="fc">·</div></div>
+          <div class="p4"><b>日</b><div class="fc">·</div></div><div class="p4"><b>時</b><div class="fc">·</div></div>
+        </div>
+        <div class="mono" id="txt" style="margin-top:13px"></div>
+        <button class="btn g" id="copySaju">전부 복사하기</button>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="view" id="v-face"><div class="wrap">
+    <div class="vh"><h2>관상 만들기</h2><p>볼 때마다 새로</p></div>
+    <div class="steps">
+      <div class="st" id="f1"><span class="n">01</span><span class="t">의뢰서<br>복사</span></div>
+      <div class="st" id="f2"><span class="n">02</span><span class="t">사진이랑<br>GPT에</span></div>
+      <div class="st" id="f3"><span class="n">03</span><span class="t">결과 복사해<br>작품에 입력</span></div>
+    </div>
+    <div class="card">
+      <button class="btn" id="copyFace" style="margin-top:0">의뢰서 복사하기</button>
+      <button class="btn g" id="fdone">작품에 넣었습니다</button>
+    </div>
+    <a class="gohome" href="https://share.crack.wrtn.ai/n2px2q" target="_blank" rel="noopener">작품으로 가기</a>
+  </div></div>
+
+  <div class="view" id="v-dir"><div class="wrap">
+    <div class="vh"><h2>아저씨는 누구</h2><p>正眞硏究所</p></div>
+    <div class="card dirbox">
+      <div class="ph">正</div>
+      <p class="q">명리와 상학 20년.<br>듣기 좋은 말은 안 합니다.</p>
+      <p class="s">새벽에 산에 오르고, 책을 읽고, 화분을 돌봅니다.</p>
+      <div class="tags"><span class="tag">사주명리</span><span class="tag">관상</span><span class="tag">풍수</span><span class="tag">궁합</span></div>
+    </div>
+    <a class="gohome" href="https://share.crack.wrtn.ai/n2px2q" target="_blank" rel="noopener">아저씨 만나러 가기</a>
+  </div></div>
+</div>
+<script>
+const FACE="역할·출력\n* 목표: 첨부 인물 이미지→크랙 관상 분석용 시각 관찰데이터 변환\n* 수행범위: 이미지 관찰+정보선별+압축\n* 해석금지: 관상풀이·성격·운세·재물·연애·직업·궁합 등 의미해석 금지\n* 유형판정: 반드시 `실사/일러스트` 중 1개 선택; 제3분류·불명 금지\n* 실사정의: 실제 사람을 촬영한 사진\n* 일러스트정의: 그림·웹툰·애니·게임CG·3D캐릭터·AI생성이미지 등 작화 인물\n* 출력헤더: 실사→`[관상/실사]` / 일러스트→`[관상/일러스트]`\n\n관찰 규칙\n* 관찰범위: 이미지에서 직접 확인 가능한 특징만 기록\n* 미세보존: 중간값에 가까워도 미세한 방향성(상승/하강/직선/곡선/돌출/함몰/장단)이 보이면 반드시 기록\n* 뭉개기금지: `보통`·`중간`·`~에 가까움`만으로 항목종료 금지⇒방향성·선의 성질을 함께 명시\n* 우선순위: 추정금지<미세보존; 눈에 보이는 미세차이는 추정이 아니라 관찰\n* 미확인처리: 가림·화면밖·해상도부족·작화생략→해당 항목 완전생략\n* 금지표기: X·불명·판단어려움·확인불가 출력 금지\n* 추정금지: 보이지 않는 형태·골격·기색·신체특징 임의보완 금지\n* 좌우차: 육안상 명확한 비대칭만 기록\n* 중복금지: 동일 특징의 복수항목 반복 금지\n* 표정영향: 현재 표정으로 변형된 형태→고정형 외형으로 확정 금지\n* 미용평가: 예쁨·잘생김·매력도 등 평가 금지\n* 민감추론: 인종·민족·질병·장애 등 추론 금지\n\n실사\n* 전체: 얼굴형·세로/가로비·상중하비·하관폭·골격/살집·명확한 비대칭\n* 額: 높이·너비·형태·헤어라인\n* 眉: 길이·굵기·곡직(직선성 정도)·눈썹꼬리 방향·눈과거리\n* 眼: 크기·가로/세로비·윗눈꺼풀선의 직선성·눈꼬리 방향(미세상승/미세하강 포함)·홍채/흰자노출·시선\n* 鼻: 길이·폭·콧대·코끝·콧방울·비공노출\n* 顴: 폭·돌출·볼살\n* 人中: 길이·폭·선명도\n* 口: 크기·입술두께·입꼬리 방향\n* 下: 길이·폭·턱끝·턱선·살집\n* 耳: 충분히 노출된 경우 크기·위치·귓바퀴·귓불\n* 色: 조명·화장과 구별 가능한 색조·명암·윤기·국소변화\n* 실사제외: 머리색·헤어스타일·복장·장식 등 관상 구조와 무관한 연출정보\n\n일러스트\n* 얼굴형태: 전체·額·眉·眼·鼻·顴·人中·口·下·耳 중 작화상 명확한 특징만 기록\n* 얼굴세부: 眉·眼은 실사와 동일 세부항목 적용(곡직·눈썹꼬리 방향·윗눈꺼풀선 직선성·눈꼬리 방향)\n* 작화제한: 작화표현→실제 생리적 골격·피부·기색으로 확대추정 금지\n* 髮: 머리색·길이·질감·정돈/흐트러짐·앞머리·특징적 스타일\n* 瞳: 눈동자색·특징적 동공/홍채표현\n* 表: 눈썹·눈·입에서 직접 확인되는 현재표정\n* 服: 복장종류·형태·정돈도·제복/정장/전투복 등 특징\n* 飾: 안경·장신구·문신·흉터·주근깨·헤어장식 등 특징요소\n* 雰: 자세·고개각도·시선·몸의 긴장/이완 등 현재연출\n* 디자인선별: 캐릭터 식별·인상형성에 기여하는 특징 우선\n* 디자인해석금지: 색·복장·장식→성격·도덕성·운명으로 변환 금지\n* 상징공식금지: `적안=잔혹`·`검은옷=악함` 등 단일상징 해석 금지\n\n압축·검수\n* 상한: 인물 1명당 300자 미만\n* 문법: `항목:특징·특징/항목:특징`\n* 빈항목: 출력 금지\n* 설명금지: 근거·주의문·관상해석·부연설명 출력 금지\n* 초과처리: 반복정보→판독기여 낮은 특징→중간값 서술 순 삭제; 방향성 기술은 최후까지 보존\n* 실사보존: 眉·眼의 방향성·직선성 최우선; 다음 전체·鼻·顴·口·下 핵심형태\n* 일러스트보존: 眉·眼 방향성+얼굴 핵심형태+髮·瞳·表·服·飾·雰의 특징적 정보 균형보존\n* 궁합대응: 다른 인물과 형태·표현·주도성·경계·조응/대조 비교에 유효한 특징 우선\n* 최종검수: 유형2분류→미확인항목삭제→추정/해석삭제→중복삭제→`보통`만으로 끝난 항목 재기술→300자미만 확인\n* 최종출력: 데이터 1줄만 출력; 코드블록·설명·글자수 추가 금지\n\n출력 형식\n* 실사: `[관상/실사]전체:.../額:.../眉:.../眼:.../鼻:.../顴:.../人中:.../口:.../下:.../耳:.../色:...`\n* 일러스트: `[관상/일러스트]전체:.../額:.../眉:.../眼:.../鼻:.../顴:.../人中:.../口:.../下:.../耳:.../髮:.../瞳:.../表:.../服:.../飾:.../雰:...`";
+const $=s=>document.querySelector(s);
+const bgm=$("#bgm");
+
+$("#intro").addEventListener("click",()=>{
+  const el=$("#intro");if(el.classList.contains("out"))return;
+  el.classList.add("out");
+  bgm.volume=.4;bgm.play().catch(()=>$("#snd").classList.add("off"));
+  $("#app").classList.add("on");
+  setTimeout(()=>el.remove(),850);
+});
+$("#snd").onclick=e=>{e.stopPropagation();
+  if(bgm.paused){bgm.play();$("#snd").classList.remove("off")}
+  else{bgm.pause();$("#snd").classList.add("off")}};
+
+const TITLE={home:"관상가 아저씨",saju:"사주 만들기",face:"관상 만들기",dir:"아저씨는 누구"};
+function go(v){
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("on"));
+  $("#v-"+v).classList.add("on");
+  $("#tbt").textContent=TITLE[v];
+  $("#tb").classList.toggle("sub",v!=="home");
+  window.scrollTo(0,0);
+}
+document.querySelectorAll(".mi").forEach(b=>b.onclick=()=>go(b.dataset.go));
+$("#bk").onclick=()=>go("home");
+
+const GW={甲:"木",乙:"木",丙:"火",丁:"火",戊:"土",己:"土",庚:"金",辛:"金",壬:"水",癸:"水"};
+const GY={甲:1,乙:0,丙:1,丁:0,戊:1,己:0,庚:1,辛:0,壬:1,癸:0};
+const ZM={子:"癸",丑:"己",寅:"甲",卯:"乙",辰:"戊",巳:"丙",午:"丁",未:"己",申:"庚",酉:"辛",戌:"戊",亥:"壬"};
+const HD={子:["壬","癸"],丑:["癸","辛","己"],寅:["戊","丙","甲"],卯:["甲","乙"],辰:["乙","癸","戊"],
+  巳:["戊","庚","丙"],午:["丙","己","丁"],未:["丁","乙","己"],申:["戊","壬","庚"],酉:["庚","辛"],
+  戌:["辛","丁","戊"],亥:["戊","甲","壬"]};
+const SH={木:"火",火:"土",土:"金",金:"水",水:"木"},KE={木:"土",土:"水",水:"火",火:"金",金:"木"};
+function tg(d,o){const a=GW[d],b=GW[o],s=GY[d]===GY[o];
+  if(b===a)return s?"比肩":"劫財"; if(b===SH[a])return s?"食神":"傷官";
+  if(b===KE[a])return s?"偏財":"正財"; if(KE[b]===a)return s?"偏官":"正官";
+  if(SH[b]===a)return s?"偏印":"正印"; return "";}
+
+let sex="여",cal="양",sajuText="";
+const seg=(id,fn)=>document.querySelectorAll("#"+id+" button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#"+id+" button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");fn(b.dataset.v)});
+seg("sex",v=>sex=v);
+seg("cal",v=>{cal=v;$("#leapWrap").style.display=v==="음"?"flex":"none"});
+$("#noTime").onchange=e=>{$("#time").disabled=e.target.checked;if(e.target.checked)$("#time").value=""};
+const done=id=>$("#"+id).classList.add("done");
+function fail(m){const e=$("#err");e.textContent=m;e.classList.remove("show");void e.offsetWidth;
+  e.classList.add("show");$("#out").classList.remove("show")}
+
+$("#calc").onclick=()=>{
+  $("#err").classList.remove("show");
+  if(typeof Solar==="undefined")return fail("계산 모듈 오류. 새로고침해 주세요.");
+  const d=$("#date").value; if(!d)return fail("생년월일을 넣어 주세요.");
+  const [Y,M,D]=d.split("-").map(Number);
+  if(Y<1961)return fail("1961년 이후만 계산합니다.");
+  const un=$("#noTime").checked,tv=$("#time").value;
+  if(!un&&!tv)return fail("시각을 넣거나 모름을 체크해 주세요.");
+  const [h,mi]=un?[12,0]:tv.split(":").map(Number);
+  try{
+    let sy=Y,sm=M,sd=D;
+    if(cal==="음"){const so=Lunar.fromYmd(Y,$("#leap").checked?-M:M,D).getSolar();
+      sy=so.getYear();sm=so.getMonth();sd=so.getDay()}
+    const bj=new Date(sy,sm-1,sd,h,mi-60);
+    const eB=Solar.fromYmdHms(bj.getFullYear(),bj.getMonth()+1,bj.getDate(),bj.getHours(),bj.getMinutes(),0).getLunar().getEightChar();
+    const ts=new Date(sy,sm-1,sd,h,mi-32);
+    if(ts.getHours()>=23){ts.setDate(ts.getDate()+1);ts.setHours(0,30)}
+    const eT=Solar.fromYmdHms(ts.getFullYear(),ts.getMonth()+1,ts.getDate(),ts.getHours(),ts.getMinutes(),0).getLunar().getEightChar();
+    const P=[eB.getYear(),eB.getMonth(),eT.getDay(),un?null:eT.getTime()];
+    const dg=P[2][0],zl=P.filter(Boolean).map(p=>p[1]),gl=P.filter(Boolean).map(p=>p[0]);
+    const c=()=>({木:0,火:0,土:0,金:0,水:0});let sur=c(),all=c();
+    gl.forEach(g=>{sur[GW[g]]++;all[GW[g]]++});
+    zl.forEach(z=>{sur[GW[ZM[z]]]++;HD[z].forEach(g=>all[GW[g]]++)});
+    const wx=o=>["木","火","土","金","水"].map(k=>k+o[k]).join(" ");
+    const yun=eB.getYun(sex==="남"?1:0);
+    const dy=yun.getDaYun().slice(1,9).map(x=>x.getGanZhi()+x.getStartYear()).join(" ");
+    const born=sy+"."+String(sm).padStart(2,"0")+"."+String(sd).padStart(2,"0")+" "+
+      (un?"시불명":String(h).padStart(2,"0")+":"+String(mi).padStart(2,"0"));
+    sajuText="[사주]性:"+sex+"/曆:"+cal+(cal==="음"&&$("#leap").checked?"윤":"")+"/生:"+born+
+      "/四柱:"+(un?P.slice(0,3).join(" ")+" ?":P.join(" "))+
+      "/藏:"+zl.map(z=>z+HD[z].join("")).join(" ")+
+      "/十干:"+gl.map((g,i)=>i===2?"日主":tg(dg,g)).join(" ")+
+      "/十藏:"+zl.map(z=>z+HD[z].map(g=>tg(dg,g)).join("")).join(" ")+
+      "/五表:"+wx(sur)+"/五全:"+wx(all)+
+      "/運:"+(yun.isForward()?"順":"逆")+" "+yun.getStartYear()+"."+yun.getStartMonth()+(un?"?":"")+" "+dy;
+    $("#txt").textContent=sajuText;$("#out").classList.add("show");done("s1");
+    const sv=[P[0],P[1],P[2],un?"?":P[3]];
+    document.querySelectorAll(".p4").forEach((el,i)=>setTimeout(()=>{
+      el.classList.remove("fl");void el.offsetWidth;
+      el.querySelector(".fc").textContent=sv[i];el.classList.add("fl")},i*110));
+  }catch(e){fail("계산 실패. 날짜를 확인해 주세요.")}
+};
+
+function copy(t,btn,after){
+  const ok=()=>{const o=btn.textContent;btn.textContent="복사했습니다";btn.classList.add("ok");
+    setTimeout(()=>{btn.textContent=o;btn.classList.remove("ok")},1500);if(after)after()};
+  navigator.clipboard.writeText(t).then(ok).catch(()=>{const a=document.createElement("textarea");
+    a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();ok()});
+}
+$("#copySaju").onclick=e=>{if(sajuText)copy(sajuText,e.target,()=>{done("s2");done("s3")})};
+$("#copyFace").onclick=e=>copy(FACE,e.target,()=>{done("f1");done("f2")});
+$("#fdone").onclick=()=>{done("f1");done("f2");done("f3")};
+</script>
+</body>
+</html>
